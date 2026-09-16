@@ -36,8 +36,43 @@
   }
   #cursor-glow.show{opacity:1;}
 
+  /* ---------- crossfade background layers ---------- */
+  .bg-layer{
+    position:fixed;inset:0;z-index:-3;
+    opacity:0;
+    will-change:opacity;
+    pointer-events:none;
+  }
+  .bg-0{background:
+    radial-gradient(circle at 25% 20%,rgba(124,92,255,.55),transparent 55%),
+    radial-gradient(circle at 75% 75%,rgba(0,194,255,.4),transparent 55%),
+    #000;}
+  .bg-1{background:
+    radial-gradient(circle at 30% 30%,rgba(220,220,225,.35),transparent 55%),
+    radial-gradient(circle at 70% 70%,rgba(120,120,125,.4),transparent 55%),
+    #000;}
+  .bg-2{background:
+    radial-gradient(circle at 20% 70%,rgba(0,224,198,.45),transparent 55%),
+    radial-gradient(circle at 80% 25%,rgba(255,92,160,.4),transparent 55%),
+    #000;}
+  .bg-3{background:
+    radial-gradient(circle at 50% 40%,rgba(0,194,255,.5),transparent 55%),
+    radial-gradient(circle at 30% 80%,rgba(30,20,90,.6),transparent 60%),
+    #000;}
+  .bg-4{background:
+    radial-gradient(circle at 25% 25%,rgba(255,221,85,.35),transparent 55%),
+    radial-gradient(circle at 75% 30%,rgba(255,92,92,.35),transparent 55%),
+    radial-gradient(circle at 50% 80%,rgba(124,92,255,.35),transparent 55%),
+    #000;}
+  .bg-5{background:
+    radial-gradient(circle at 50% 50%,rgba(124,92,255,.55),transparent 60%),
+    #000;}
+  .bg-6{background:
+    radial-gradient(circle at 50% 50%,rgba(255,215,106,.4),transparent 60%),
+    #000;}
+
   /* ---------- particles ---------- */
-  #bg-particles{position:fixed;inset:0;z-index:0;pointer-events:none;}
+  #bg-particles{position:fixed;inset:0;z-index:-1;pointer-events:none;}
 
   /* ---------- nav ---------- */
   nav{
@@ -52,7 +87,6 @@
     transition:opacity .6s ease, transform .6s ease;
   }
   nav.show{opacity:1;transform:translateY(0);}
-  nav .logo{font-size:19px;line-height:1;}
   nav .title{font-size:14px;font-weight:600;letter-spacing:.3px;color:#e8e8ec;}
 
   /* ---------- scenes ---------- */
@@ -65,13 +99,6 @@
     padding:40px 20px;
     z-index:1;
     overflow:hidden;
-  }
-  .scene .glow-bg{
-    position:absolute;inset:-20%;
-    filter:blur(80px);
-    opacity:.55;
-    z-index:-1;
-    pointer-events:none;
   }
 
   .eyebrow{
@@ -96,11 +123,13 @@
     margin-top:10px;
   }
 
-  /* ---------- reveal system ---------- */
-  .reveal{opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1);}
-  .reveal.in-view{opacity:1;transform:translateY(0);}
-  .reveal-img{opacity:0;transform:translateY(50px) scale(.88);transition:opacity 1.1s cubic-bezier(.16,1,.3,1),transform 1.1s cubic-bezier(.16,1,.3,1);}
-  .reveal-img.in-view{opacity:1;transform:translateY(0) scale(1);}
+  /* ---------- reveal system (JS-driven, continuous) ---------- */
+  .reveal, .reveal-img{
+    opacity:0;
+    transform:translateY(28px);
+    will-change:opacity, transform;
+  }
+  .reveal-img{transform:translateY(50px) scale(.88);}
 
   /* ---------- phone mockup ---------- */
   .phone{
@@ -207,6 +236,22 @@
   }
   .cta-btn:hover{background:rgba(255,255,255,.18);transform:translateY(-2px);}
 
+  /* ---------- credit slide ---------- */
+  .credit-name{
+    font-size:clamp(22px,4vw,36px);
+    font-weight:600;
+    margin-top:8px;
+    color:#ffd76a;
+    text-shadow:0 0 30px rgba(255,215,106,.6);
+    letter-spacing:.5px;
+  }
+  .credit-heart{
+    margin-top:36px;
+    font-size:13px;
+    color:var(--dim);
+    letter-spacing:1px;
+  }
+
   /* ---------- scroll cue ---------- */
   .scroll-cue{
     position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
@@ -223,19 +268,27 @@
 <body>
 
 <div id="cursor-glow"></div>
+
+<div class="bg-layer bg-0" data-idx="0"></div>
+<div class="bg-layer bg-1" data-idx="1"></div>
+<div class="bg-layer bg-2" data-idx="2"></div>
+<div class="bg-layer bg-3" data-idx="3"></div>
+<div class="bg-layer bg-4" data-idx="4"></div>
+<div class="bg-layer bg-5" data-idx="5"></div>
+<div class="bg-layer bg-6" data-idx="6"></div>
+
 <canvas id="bg-particles"></canvas>
 
 <nav id="mainNav">
-  <div class="logo"></div>
   <div class="title">iPhone 18</div>
 </nav>
 
-<!-- HERO -->
-<section class="scene" id="hero">
+<!-- 0: HERO -->
+<section class="scene" data-idx="0">
   <div class="eyebrow reveal">Представляем</div>
   <h1 class="big reveal">iPhone 18</h1>
-  <div class="tagline reveal" style="transition-delay:.1s">Дальше только будущее.</div>
-  <div class="phone reveal-img" style="transition-delay:.15s">
+  <div class="tagline reveal">Дальше только будущее.</div>
+  <div class="phone reveal-img">
     <div class="screen">
       <div class="wallpaper">
         <div class="blob blob1"></div>
@@ -249,32 +302,32 @@
   <div class="scroll-cue"></div>
 </section>
 
-<!-- TITANIUM -->
-<section class="scene">
+<!-- 1: TITANIUM -->
+<section class="scene" data-idx="1">
   <div class="eyebrow reveal">Дизайн</div>
   <h2 class="big reveal">Титан.</h2>
-  <div class="tagline reveal" style="transition-delay:.1s">Прочнее. Легче. Красивее.</div>
-  <div class="titan-block reveal-img" style="transition-delay:.15s"></div>
+  <div class="tagline reveal">Прочнее. Легче. Красивее.</div>
+  <div class="titan-block reveal-img"></div>
 </section>
 
-<!-- CAMERA -->
-<section class="scene">
+<!-- 2: CAMERA -->
+<section class="scene" data-idx="2">
   <div class="eyebrow reveal">Камера</div>
   <h2 class="big reveal">Видит больше.</h2>
-  <div class="tagline reveal" style="transition-delay:.1s">Каждый кадр — искусство.</div>
-  <div class="cam-block reveal-img" style="transition-delay:.15s">
+  <div class="tagline reveal">Каждый кадр — искусство.</div>
+  <div class="cam-block reveal-img">
     <div class="lens lens1"></div>
     <div class="lens lens2"></div>
     <div class="lens lens3"></div>
   </div>
 </section>
 
-<!-- CHIP -->
-<section class="scene">
+<!-- 3: CHIP -->
+<section class="scene" data-idx="3">
   <div class="eyebrow reveal">Производительность</div>
   <h2 class="big reveal">Чип A20.</h2>
-  <div class="tagline reveal" style="transition-delay:.1s">Мощность нового поколения.</div>
-  <div class="chip-wrap reveal-img" style="transition-delay:.15s">
+  <div class="tagline reveal">Мощность нового поколения.</div>
+  <div class="chip-wrap reveal-img">
     <div class="ping"></div>
     <div class="ping"></div>
     <div class="ping"></div>
@@ -282,12 +335,12 @@
   </div>
 </section>
 
-<!-- DISPLAY -->
-<section class="scene">
+<!-- 4: DISPLAY -->
+<section class="scene" data-idx="4">
   <div class="eyebrow reveal">Дисплей</div>
   <h2 class="big reveal">Без границ.</h2>
-  <div class="tagline reveal" style="transition-delay:.1s">Реальность становится ярче.</div>
-  <div class="display-wrap reveal-img" id="displayWrap" style="transition-delay:.15s">
+  <div class="tagline reveal">Реальность становится ярче.</div>
+  <div class="display-wrap reveal-img" id="displayWrap">
     <div class="app-icon" style="--c1:#7c5cff;--c2:#00e0c6"></div>
     <div class="app-icon" style="--c1:#ff5ca0;--c2:#ffb86c"></div>
     <div class="app-icon" style="--c1:#00c2ff;--c2:#7c5cff"></div>
@@ -297,12 +350,11 @@
   </div>
 </section>
 
-<!-- FINAL -->
-<section class="scene">
-  <div class="glow-bg" style="background:radial-gradient(circle,#7c5cff,transparent 60%);animation:float 8s ease-in-out infinite;"></div>
+<!-- 5: FINAL -->
+<section class="scene" data-idx="5">
   <div class="eyebrow reveal">iPhone 18</div>
   <h2 class="big reveal">Уже здесь.</h2>
-  <div class="phone reveal-img" style="transition-delay:.15s">
+  <div class="phone reveal-img">
     <div class="screen">
       <div class="wallpaper">
         <div class="blob blob1"></div>
@@ -313,7 +365,15 @@
       <div class="shine-sweep"></div>
     </div>
   </div>
-  <button class="cta-btn reveal" style="transition-delay:.3s">Узнать больше</button>
+  <button class="cta-btn reveal">Узнать больше</button>
+</section>
+
+<!-- 6: CREDIT -->
+<section class="scene" data-idx="6">
+  <div class="eyebrow reveal">Neon Sky Studio</div>
+  <h2 class="big reveal" style="font-size:clamp(28px,6vw,60px)">Создатель</h2>
+  <div class="credit-name reveal">@salfitka_5</div>
+  <div class="credit-heart reveal">СДЕЛАНО С ЛЮБОВЬЮ К ДЕТАЛЯМ</div>
 </section>
 
 <script>
@@ -335,7 +395,6 @@
   glowLoop();
 
   /* ---------- app icons parallax ---------- */
-  const displayWrap = document.getElementById('displayWrap');
   document.querySelectorAll('.app-icon').forEach((icon,i)=>{
     window.addEventListener('mousemove', e=>{
       const nx = (e.clientX/innerWidth-0.5)*(6+i);
@@ -344,28 +403,67 @@
     });
   });
 
-  /* ---------- reveal on scroll ---------- */
-  const revealEls = document.querySelectorAll('.reveal, .reveal-img');
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(entry=>{
-      if(entry.isIntersecting){
-        entry.target.classList.add('in-view');
-      } else {
-        entry.target.classList.remove('in-view');
-      }
-    });
-  }, {threshold:0.25});
-  revealEls.forEach(el=>io.observe(el));
+  /* ---------- smoothstep helper ---------- */
+  function smoothstep(x){
+    x = Math.max(0, Math.min(1, x));
+    return x*x*(3-2*x);
+  }
 
-  /* ---------- nav show on scroll ---------- */
+  /* ---------- continuous scroll-driven reveal + background crossfade ---------- */
+  const scenes = Array.from(document.querySelectorAll('.scene'));
+  const layers = Array.from(document.querySelectorAll('.bg-layer'));
   const nav = document.getElementById('mainNav');
-  window.addEventListener('scroll', ()=>{
-    if(window.scrollY > innerHeight*0.6){
+
+  // текущие (лерпнутые) значения прозрачности слоёв фона для доп. плавности
+  let currentLayerOpacity = layers.map(()=>0);
+
+  function updateOnScroll(){
+    const vh = window.innerHeight;
+    const viewportCenter = vh/2;
+
+    scenes.forEach((scene, i)=>{
+      const rect = scene.getBoundingClientRect();
+      const sceneCenter = rect.top + rect.height/2;
+      const dist = Math.abs(sceneCenter - viewportCenter);
+      // 0 когда далеко, 1 когда секция точно в фокусе
+      const raw = 1 - dist/(vh*0.85);
+      const focus = smoothstep(raw);
+
+      // reveal элементов внутри секции — с лёгким индивидуальным сдвигом
+      const items = scene.querySelectorAll('.reveal, .reveal-img');
+      items.forEach((el, idx)=>{
+        const delay = idx*0.06;
+        const local = smoothstep(Math.max(0, raw - delay*0.6));
+        el.style.opacity = local;
+        if(el.classList.contains('reveal-img')){
+          const ty = (1-local)*50;
+          const sc = 0.88 + local*0.12;
+          el.style.transform = `translateY(${ty}px) scale(${sc})`;
+        } else {
+          const ty = (1-local)*28;
+          el.style.transform = `translateY(${ty}px)`;
+        }
+      });
+
+      // цель для фонового слоя
+      const targetLayerOpacity = focus;
+      currentLayerOpacity[i] += (targetLayerOpacity - currentLayerOpacity[i]) * 0.12;
+      if(layers[i]) layers[i].style.opacity = currentLayerOpacity[i];
+    });
+
+    // навигация появляется после первой секции
+    if(window.scrollY > vh*0.6){
       nav.classList.add('show');
     } else {
       nav.classList.remove('show');
     }
-  });
+  }
+
+  function loop(){
+    updateOnScroll();
+    requestAnimationFrame(loop);
+  }
+  loop();
 
   /* ---------- particles background ---------- */
   const canvas = document.getElementById('bg-particles');
