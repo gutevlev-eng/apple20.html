@@ -370,7 +370,6 @@
 
 <!-- 6: CREDIT -->
 <section class="scene" data-idx="6">
-  <div class="eyebrow reveal">Neon Sky Studio</div>
   <h2 class="big reveal" style="font-size:clamp(28px,6vw,60px)">Создатель</h2>
   <div class="credit-name reveal">@salfitka_5</div>
   <div class="credit-heart reveal">СДЕЛАНО С ЛЮБОВЬЮ К ДЕТАЛЯМ</div>
@@ -414,7 +413,6 @@
   const layers = Array.from(document.querySelectorAll('.bg-layer'));
   const nav = document.getElementById('mainNav');
 
-  // текущие (лерпнутые) значения прозрачности слоёв фона для доп. плавности
   let currentLayerOpacity = layers.map(()=>0);
 
   function updateOnScroll(){
@@ -425,11 +423,9 @@
       const rect = scene.getBoundingClientRect();
       const sceneCenter = rect.top + rect.height/2;
       const dist = Math.abs(sceneCenter - viewportCenter);
-      // 0 когда далеко, 1 когда секция точно в фокусе
       const raw = 1 - dist/(vh*0.85);
       const focus = smoothstep(raw);
 
-      // reveal элементов внутри секции — с лёгким индивидуальным сдвигом
       const items = scene.querySelectorAll('.reveal, .reveal-img');
       items.forEach((el, idx)=>{
         const delay = idx*0.06;
@@ -445,13 +441,11 @@
         }
       });
 
-      // цель для фонового слоя
       const targetLayerOpacity = focus;
       currentLayerOpacity[i] += (targetLayerOpacity - currentLayerOpacity[i]) * 0.12;
       if(layers[i]) layers[i].style.opacity = currentLayerOpacity[i];
     });
 
-    // навигация появляется после первой секции
     if(window.scrollY > vh*0.6){
       nav.classList.add('show');
     } else {
